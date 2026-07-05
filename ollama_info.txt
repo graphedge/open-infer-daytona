@@ -1,0 +1,3 @@
+OLLAMA_ENDPOINT=https://11434-24d5c17e-f796-49f2-956d-e9f5c9a96241.daytonaproxy01.net
+OLLAMA_TOKEN=jwgvozu5ecahj4yyarvg3armyjcslxgg
+SANDBOX_ID=24d5c17e-f796-49f2-956d-e9f5c9a96241
