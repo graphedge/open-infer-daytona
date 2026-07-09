@@ -1,0 +1,40 @@
+---
+description: Daytona + OpenCode agent architecture and conventions for this repo
+alwaysApply: true
+---
+
+# open-infer-daytona
+
+## Architecture
+
+- **Local (Cursor CLI):** deploy scripts, agent_client.py, query_ollama.py — orchestration only.
+- **Daytona OpenCode sandbox:** the agent harness — receives prompts, tools, code execution.
+- **Daytona Ollama sandbox:** inference only (gemma2:2b default via OpenAI-compatible /v1 API; override with `OLLAMA_MODEL`)
+
+Do not treat Cursor as the Daytona agent. OpenCode is the first agent harness on Daytona.
+
+## Canonical scripts
+
+- `serve_ollama_main.py` — deploy Ollama (not the setup_ollama_*.py variants)
+- `deploy_opencode.py` — deploy OpenCode wired to Ollama
+- `agent_client.py` — local client talking to OpenCode preview URL
+- `query_ollama.py` — verify inference
+
+## Daytona process persistence
+
+- Use `/usr/local/bin/ollama` (absolute paths).
+- Long-lived daemons: foreground wrapper in a session (`run_async` + `while true; sleep 1`), not `nohup` in a dying `exec`.
+- Health-check `localhost:11434/api/tags` inside the sandbox before `pull`.
+- See `ollama-postmortem.md` for failure modes.
+
+## OpenCode config
+
+- Provider: `openai` type, `baseUrl: {OLLAMA_ENDPOINT}/v1`
+- Header: `x-daytona-preview-token: {OLLAMA_TOKEN}`
+- Credentials live in `ollama_info.txt` / `opencode_info.txt` (gitignored)
+- Deploy scripts write timestamped logs to `logs/`; check there first on failure
+
+## Deferred
+
+- `spec1.md` 31B single-sandbox path
+- `serve_vllm.py` (GPU quota is 0)

@@ -1,1 +1,7 @@
 main.py
+.venv/
+.env
+ollama_info.txt
+opencode_info.txt
+get-pip.py
+logs/
